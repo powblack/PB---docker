@@ -1,0 +1,40 @@
+---
+ - hosts: server
+   remote_user: jonathan
+   become: yes
+   tasks: 
+      - name: "Executar o container MySQL"
+        docker_container:
+          name: db
+          image: mysql:5.7
+          env: 
+            MYSQL_ROOT_PASSWORD: jonathan1995
+      - name: "Executa o container WordPress"
+        docker_container:
+           name: wordpress
+           image: wordpress
+
+      - name: Create a virtual machine on given ESXi hostname
+        vmware_guest:
+           hostname: 192.168.237.152
+           username: root
+           password: Cgthan158699
+           validate_certs: no
+           folder: /
+           name: VM02
+           state: poweredoff
+           guest_id: centos64Guest
+#          esxi_hostname: 10.2.11.45
+           disk:
+              - size_gb: 10
+                type: thin
+                datastore: datastore1
+           hardware:
+              memory_mb: 1024
+              num_cpus: 2
+              scsi: paravirtual
+           networks:
+              - name: VM Network
+                device_type: vmxnet3
+        delegate_to: localhost
+        register: deploy_vm
